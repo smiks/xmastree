@@ -123,6 +123,15 @@ def draw_christmas_tree(canvas, x, y, star_id):
 
     # Schedule the next redraw after 2 seconds (2000 milliseconds)
     canvas.after(800, draw_christmas_tree, canvas, x, y, star_id)
+
+def move_image(canvas, image_id):
+    """Moves the image from right to left."""
+    canvas.move(image_id, -2, 0)  # Move left by 2 pixels
+    coords = canvas.coords(image_id)
+    if coords[0] < -50:  # Reset image position if it goes off-screen
+        canvas.coords(image_id, 450, coords[1])  # Reset to the right
+    canvas.after(50, move_image, canvas, image_id)
+
 def main():
 
     #DJ part
@@ -147,10 +156,15 @@ def main():
     star_id = [None]  # This will store the star's ID
 
     # Draw the initial Christmas tree and start the redraw loop
-    draw_christmas_tree(canvas, 200, 50, star_id)
+    draw_christmas_tree(canvas, 200, 100, star_id)
 
     # Start blinking the star
     blink_star(canvas, star_id)
+
+    # move santa
+    image = tk.PhotoImage(file="santaSmall.png")  # Load your image
+    image_id = canvas.create_image(450, 50, image=image, anchor="center")  # Initial position
+    move_image(canvas, image_id)
 
     canvas.bind("<Button-1>", lambda event: on_tree_click(event, canvas, 200, 50, star_id))
 
